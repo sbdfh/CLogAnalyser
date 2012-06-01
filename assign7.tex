@@ -1,0 +1,40 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\begin{document}
+
+Sascha Brauer, 6495401\\
+Marcel Fortmann, 6462885\\
+Fabian Schmauder, xxxxxx
+
+\begin{center}
+{\huge \textbf{Data and Information Visualization}}\\
+Summer Term 2012\\
+Assignment 7
+\end{center}
+
+\paragraph{First Visualization}
+
+\begin{wrapfigure}{r}{0.75\textwidth}
+  \begin{center}
+  %  \includegraphics[width=0.63\textwidth]{lines-small.png}
+  \end{center}
+  \caption{Line Graph Visualization}
+\end{wrapfigure}
+
+The idea behind my first visualization was to show, how fast the leafs of different trees grow in relation to each other. To enable this kind of visualization the data had to be refined a little bit. For each of the three timestamps I calculated the average growth in area per day (in $\mu m^2$). So every single curve shows how fast the leafs of one tree have grown on average per day over a certain period of time. This visualization enables one to compare the growth speed of the different trees.
+
+\paragraph{Second Visualization}
+
+\begin{wrapfigure}{r}{0.65\textwidth}
+  \begin{center}
+   % \includegraphics[width=0.63\textwidth]{bubble_matrix-small.png}
+  \end{center}
+  \caption{Matrix Chart Visualization}
+\end{wrapfigure}
+
+The second visualization doesn't care for the inter-tree comparison so much, but rather focuses on representing single tree data. Every bubble shows one dimension (length/width) of one tree. The full bubble shows the total size after 4 months and is divided in the growth of that trees leaf over the three different timestamps. One can very well see in which time the leaf grows most/least.
+
+\end{document}
