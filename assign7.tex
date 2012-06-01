@@ -3,11 +3,8 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{hyperref}
 \begin{document}
-
-Sascha Brauer, 6495401\\
-Marcel Fortmann, 6462885\\
-Fabian Schmauder, xxxxxx
 
 \begin{center}
 {\huge \textbf{Data and Information Visualization}}\\
@@ -15,26 +12,139 @@ Summer Term 2012\\
 Assignment 7
 \end{center}
 
-\paragraph{First Visualization}
+\paragraph{Title and Participants}
+\hfill \\ \hfill \\
+\textit{World of Warcraft Combat Log Visualization}\\
+\begin{itemize}
+\item Sascha Brauer, 6495401
+\item Marcel Fortmann, 6462885
+\item Fabian Schmauder, xxxxxx
+\end{itemize}
 
-\begin{wrapfigure}{r}{0.75\textwidth}
-  \begin{center}
-  %  \includegraphics[width=0.63\textwidth]{lines-small.png}
-  \end{center}
-  \caption{Line Graph Visualization}
-\end{wrapfigure}
+\paragraph{Visualization Goals}
+\hfill \\ \hfill \\
+The main goal to achieve is motivation. A comparison with other players using the same skill set would allow the players to relate and motivate each other to improve in stages of the game where they lack of performance. Seeing your own improvements in the comparison of yourself over time would not only motivate, but also give a certain feeling of success.\\
+The second goal, coming along with improving your performance, is to find your flaws.
 
-The idea behind my first visualization was to show, how fast the leafs of different trees grow in relation to each other. To enable this kind of visualization the data had to be refined a little bit. For each of the three timestamps I calculated the average growth in area per day (in $\mu m^2$). So every single curve shows how fast the leafs of one tree have grown on average per day over a certain period of time. This visualization enables one to compare the growth speed of the different trees.
+\paragraph{Data Model}
+\hfill \\ \hfill \\
+This data is nominal and quantitative. Each line contains a source and a target (the nominal part) as well as the exact amount of damage/healing done (the quantitative part). In this sense you could classify the data as Points of the for [Source, Target, Healing or Damage, Amount]. The data is also ordered in time by a timestamp on every line of data, although this dataset is not continuos. It's also very reliable data, because one can be sure that every action that happened is recorded in the Log. 
 
-\paragraph{Second Visualization}
+\paragraph{Potential User}
+\hfill \\ \hfill \\
+The potential user of the visualization software is a gamer playing World of Warcraft. He could be a member from the group of people that recorded the log. This user is our main target. Our second target is the leader of the group, who wants to analyze flaws or problems, helping the other group members to improve. At least the person could also be any gamer, playing World of Warcraft, who wants to compare the own performance to other players, which are playing e.g. the same class or role. 
 
-\begin{wrapfigure}{r}{0.65\textwidth}
-  \begin{center}
-   % \includegraphics[width=0.63\textwidth]{bubble_matrix-small.png}
-  \end{center}
-  \caption{Matrix Chart Visualization}
-\end{wrapfigure}
+\paragraph{Interaction Techniques}
+\hfill \\ \hfill \\
+What seems to be very important to achieve these goals is an interactive technique for selective filtering. Since the data sets are so huge the user needs to specify what part of the data he wants to see in detail. He could for example just select a few players from the visualized data by direct manipulation so that the rest of the data is faded out (clicking on the parts you want to see).\\
+As mentioned before, this data is classical \emph{Time-Series Data}. For the goals stated earlier, two techniques called \emph{Index Charts} and \emph{Stacked Graphs} seem to be very desirable. As Index Charts are very good when you want to observe relative data changes instead of absolute values, this is the way to go, if a player would like to observe his own performance over several weeks during the same encounter. In oppose the Stacked Graph would be very useful if you want to analyze a single encounter and see how much each player contributed to the whole group.
 
-The second visualization doesn't care for the inter-tree comparison so much, but rather focuses on representing single tree data. Every bubble shows one dimension (length/width) of one tree. The full bubble shows the total size after 4 months and is divided in the growth of that trees leaf over the three different timestamps. One can very well see in which time the leaf grows most/least.
+\paragraph{Evaluation}
+\hfill \\ \hfill \\
+We choose three random players of all players we know that play World of Warcraft. They get certain tasks (we have to think about first) and have to do them. We want them to think aloud, helping us to find mistakes or lacks of clarity and improving our software by solving the problems.
+
+\clearpage
+
+\begin{center}
+{\huge \textbf{Group Meeting 1}}\\
+\end{center}
+\begin{description}
+\item Sascha Brauer \hfill Begin: 2012-06-01, 9:00am 
+\item Fabian Schmauder \hfill End: 2012-06-01, 11:30am
+\item Marcel Fortmann \hfill Writer: Marcel Fortmann
+\end{description}
+
+\paragraph{Top 1: Dataset}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Analyzing the data set in order to understand the single data elements
+\item \url{http://www.wowwiki.com/COMBAT_LOG_EVENT_Details} encodes the single data elements
+\item Taking a deeper look into the dataset to identify relevant (meaningful) information (to visualize)
+\item Transition to Top 2: How to parse?
+\end {enumerate}
+
+\paragraph{Top 2: Parsing}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item \textbf{New Action Item:} Parsing (Deadline: 2012-06-05), Sascha \& Marcel
+\item Structure to use: Linked-List, easy to iterate, dynamic structure (longer discussion)
+\item Parse everything and think about the relevant single data elements later. Having every single data element makes us more flexible.
+\end {enumerate}
+
+\paragraph{Top 3: Visualization Goals}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item \textbf{New Action Item:} Review the Goals (Deadline: 2012-06-05), Sascha \& Marcel \& Fabian
+\item Identified potential users of the visualization software
+\item Potential users are: Any World of Warcraft Player, specifically the leader or a member of the group
+\item Identified certain goals for the group of potential users 
+\item Goals are: Finding flaws and Improving performance by: Analyzing the performance over a complete encounter, Comparing different fights against the same encounter, Comparing players with the same classes and roles
+\end {enumerate}
+
+\paragraph{Top 4: Visualization and Interaction Techniques}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Identified certain techniques, we want to use (preliminary)
+\end {enumerate}
+
+\paragraph{Top 5: Evaluation}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item \textbf{New Action Item:} Evaluation (Deadline: 2012-07-01), Sascha \& Marcel \& Fabian
+\item Fast decision that \textit{think aloud} is the easiest way to get rapid and valuable feedback
+\item Evaluation should begin after the first Visualization technique is implemented. Rinse and repeat every few days
+\item Everyone should attend to, at least, one World of Warcraft player
+\item \textbf{New Action Item:} Evaluation-Tasks (Deadline: 2012-05-06), Sascha \& Marcel \& Fabian
+\item Everyone has to think about certain tasks for the evaluation
+\end {enumerate}
+
+\paragraph{Top 6: Next Groupmeeting}
+\hfill \\ \hfill \\
+2012-06-05, 11:15am-1pm, HNI F1 Pool
+
+\clearpage
+
+\begin{center}
+{\huge \textbf{Group Meeting 2}}\\
+\end{center}
+\begin{description}
+\item Sascha Brauer \hfill Begin: 2012-06-05, 11:15am 
+\item Fabian Schmauder \hfill End: 2012-06-05, 1pm
+\item Marcel Fortmann \hfill Writer: Marcel Fortmann
+\end{description}
+
+\paragraph{Top 1: Parsing}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item bla
+\end {enumerate}
+
+\paragraph{Top 2: Review the Goals}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item bla
+\end {enumerate}
+
+\paragraph{Top 3: Visualization Goals}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item bla
+\end {enumerate}
+
+\paragraph{Top 4: Evaluation}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item bla
+\end {enumerate}
+
+\paragraph{Top 5: Evaluation-Tasks}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item bla
+\end {enumerate}
+
+\paragraph{Top 6: Next Groupmeeting}
+\hfill \\ \hfill \\
+2012-06-xx, xx:xx, HNI F1 Pool
 
 \end{document}
