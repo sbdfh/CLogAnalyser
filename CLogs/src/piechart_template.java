@@ -8,6 +8,7 @@ public class piechart_template {
 	private HashMap<String,Integer> data = new HashMap<String,Integer> ();
 	private Integer sum_damage = 0;
 	private float color = 1f;
+	public static float TESSELATION = 50;
 	
 
 	public piechart_template (HashMap<String,Integer> datamap){
@@ -36,10 +37,32 @@ public class piechart_template {
 		color -= 0.1f;
 		gl.glColor3f(0, color, 0);
 		
-		gl.glBegin(GL.GL_TRIANGLES);	
+		while (winkel>90){
+			gl.glBegin(GL.GL_POLYGON);	
 			gl.glVertex3f(0, 0, 0);
-			gl.glVertex3f(0, 1, 0);	
-			gl.glVertex3f((float)Math.sin(winkel/180f*Math.PI), (float)Math.cos(winkel/180f*Math.PI), 0);
+			gl.glVertex3f(0, 1, 0);
+			float x = 0;
+			while (x <= TESSELATION){
+				++x;
+				float xP = x/TESSELATION;
+				gl.glVertex3f(xP, (float)Math.sqrt(1-xP*xP), 0);
+			}
+			//gl.glVertex3f((float)Math.sin(winkel/180f*Math.PI), (float)Math.cos(winkel/180f*Math.PI), 0);
+		gl.glEnd();	
+		gl.glRotatef(-90, 0, 0, 1);
+		winkel -= 90;
+		}
+		
+		gl.glBegin(GL.GL_POLYGON);	
+			gl.glVertex3f(0, 0, 0);
+			gl.glVertex3f(0, 1, 0);
+			float x= 0,  d=(float)Math.sin(winkel/180f*Math.PI);
+			while (x < d*TESSELATION){
+				++x;
+				float xP = x/TESSELATION;
+				gl.glVertex3f(xP, (float)Math.sqrt(1-xP*xP), 0);
+			}
+			//gl.glVertex3f((float)Math.sin(winkel/180f*Math.PI), (float)Math.cos(winkel/180f*Math.PI), 0);
 		gl.glEnd();
 		
 		gl.glColor3f(1, 0, 0);

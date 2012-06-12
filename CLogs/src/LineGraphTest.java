@@ -26,7 +26,7 @@ public class LineGraphTest extends JoglTemplate {
 	{
 		super.init(drawable);
 		
-		CLogParser p = new CLogParser("test.txt");
+		CLogParser p = new CLogParser("FullCLogExample.txt");
 		p.parse();
 		LinkedList<CLogEntry> log = p.getLog();
 		HashMap<Integer, LineGraphData> map = new HashMap<Integer, LineGraphData>();

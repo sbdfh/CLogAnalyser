@@ -195,7 +195,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		// get the gl object
 		GL gl = drawable.getGL();
 		// set the erasing color (black)
-		gl.glClearColor(0f, 0f, 0f, 0f);
+		gl.glClearColor(1f, 1f, 1f, 1f);
 		// clear screen with the defined erasing color and depth buffer
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		gl.glPushMatrix();
@@ -207,12 +207,12 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		
 		HashMap<String,Integer> data = new HashMap<String,Integer> ();		
 		data.put("Moonfire", 	12365);
-		data.put("Mangle", 		11230);
-		data.put("Shred", 		39220);
-		data.put("Rip", 		39220);
-		data.put("Attack", 		20000);
-		data.put("Rake", 		31712);
-		data.put("Swipe", 		44112);
+		data.put("Mangle", 		12365);
+		data.put("Shred", 		43134);
+		data.put("Rip", 		12426);
+		data.put("Attack", 		95734);
+		data.put("Rake", 		74644);
+		data.put("Swipe", 		57283);
 		piechart_template piechart =  new piechart_template(data);
 		piechart.draw_piechart(gl, glut);
 		
