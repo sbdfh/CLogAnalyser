@@ -1,0 +1,208 @@
+\documentclass{scrartcl}
+\usepackage[latin1]{inputenc}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\begin{document}
+
+\begin{center}
+{\huge \textbf{Data and Information Visualization}}\\
+Summer Term 2012\\
+Assignment 7
+\end{center}
+
+\paragraph{Title and Participants}
+\hfill \\ \hfill \\
+\emph{MMO Combat Log Visualization}\\
+\begin{itemize}
+\item Sascha Brauer, 6495401
+\item Marcel Fortmann, 6462885
+\item Fabian Schmauder, 6499933
+\end{itemize}
+
+\paragraph{Visualization Goals}
+\hfill \\ \hfill \\
+The main goal to achieve is motivation. A comparison with other players using the same skill set would allow the players to relate and motivate each other to improve in stages of the game where they lack of performance. Seeing your own improvements in the comparison of yourself over time would not only motivate, but also give a certain feeling of success.\\
+The second goal, coming along with improving your performance, is to find your flaws.
+
+\paragraph{Data Model}
+\hfill \\ \hfill \\
+This data is nominal and quantitative. Each line contains a source and a target (the nominal part) as well as the exact amount of damage/healing done (the quantitative part). In this sense you could classify the data as Points. The data is also ordered in time by a timestamp on every line of data, although this dataset is not continuos. It's also very reliable data, because one can be sure that every action that happened is recorded in the Log. 
+
+\paragraph{Potential User}
+\hfill \\ \hfill \\
+The potential user of the visualization software is a gamer playing World of Warcraft. He could be a member from the group of people that recorded the log. This user is our main target. Our second target is the leader of the group, who wants to analyze flaws or problems, helping the other group members to improve. At least the person could also be any gamer, playing World of Warcraft, who wants to compare the own performance to other players, which are playing e.g. the same class or role. 
+
+\paragraph{Visualization and Interaction Techniques}
+\hfill \\ \hfill \\
+What seems to be very important to achieve these goals is an interactive technique for selective filtering. Since the data sets are so huge the user needs to specify what part of the data he wants to see in detail. He could for example just select a few players from the visualized data by direct manipulation so that the rest of the data is faded out (clicking on the parts you want to see).\\
+As mentioned before, this data is classical \emph{Time-Series Data}. For the goals stated earlier, two techniques called \emph{Index Charts} and \emph{Stacked Graphs} seem to be very desirable. As Index Charts are very good when you want to observe relative data changes instead of absolute values, this is the way to go, if a player would like to observe his own performance over several weeks during the same encounter. In oppose the Stacked Graph would be very useful if you want to analyze a single encounter and see how much each player contributed to the whole group.\\
+In our case we decided to use line graphs. The first graph shows all players in different colored lines at once. The x-axis holds the time, the y-axis the damage per second. You can select (select and zoom) one of the lines, representing one specific player, to get more information. Although the index-chart can be normalized to a point as if the encounter started right there. Every point on one of the lines shows (mouse-over) a summarizing tool-tip, displaying the most important information about the events happened at that certain point of time.\\
+In the first view, there is a second window, containing spells used, ordered by name. You can select (selective filtering)  one or more spells and every visualization is filtered with this filter.\\
+The second view shows detailed information about a specific player. A pie-chart shows the percentage damage done over all spells, casted by the selected player. A line-graph visualizes the damage per second done by every spell, casted by the specific player, over time.
+
+\paragraph{Evaluation}
+\hfill \\ \hfill \\
+We choose three random players of all players we know that play World of Warcraft. They get certain tasks (we have to think about first) and have to do them. We want them to think aloud, helping us to find mistakes or lacks of clarity and improving our software by solving the problems.
+
+\clearpage
+
+\begin{center}
+{\huge \textbf{Group Meeting 1}}\\
+\end{center}
+\begin{description}
+\item Sascha Brauer \hfill Begin: 2012-06-01, 9:00am 
+\item Fabian Schmauder \hfill End: 2012-06-01, 11:30am
+\item Marcel Fortmann \hfill Writer: Marcel Fortmann
+\end{description}
+
+\paragraph{Top 1: Dataset}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Analyzing the data set in order to understand the single data elements
+\item \url{http://www.wowwiki.com/COMBAT_LOG_EVENT_Details} decodes the single data elements
+\item Taking a deeper look into the dataset to identify relevant (meaningful) information (to visualize)
+\item Transition to Top 2: How to parse?
+\end {enumerate}
+
+\paragraph{Top 2: Parsing}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item \textbf{New Action Item:} Parsing (Deadline: 2012-06-05), Sascha \& Marcel
+\item Structure to use: Linked-List, easy to iterate, dynamic structure (longer discussion)
+\item Parse everything and think about the relevant single data elements later. Having every single data element makes us more flexible.
+\end {enumerate}
+
+\paragraph{Top 3: Visualization Goals}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item \textbf{New Action Item:} Review the Goals (Deadline: 2012-06-05), Sascha \& Marcel \& Fabian
+\item Identified potential users of the visualization software
+\item Potential users are: Any World of Warcraft Player, specifically the leader or a member of the group
+\item Identified certain goals for the group of potential users 
+\item Goals are: Finding flaws and Improving performance by: Analyzing the performance over a complete encounter, Comparing different fights against the same encounter, Comparing players with the same classes and roles
+\end {enumerate}
+
+\paragraph{Top 4: Visualization and Interaction Techniques}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Identified certain techniques, we want to use (preliminary) line-graphs and pie-charts
+\item line graphs, x-axis time, y-axis damage per second, lines in different colors show different players (view 1)
+\item line graphs have to be normalizable and adjustable
+\item lines on line graph show summarizing tooltip on mouseover
+\item view 1 has a second window showing a spell-hierarchy 
+\item selective filtering. A certain line can be selected, leading into a deeper view, showing information about the selected player (view 2)
+\item pie-chart in view 2 shows percentage of different spells compared to overall damage done by the selected player
+\item line-graph in view 2 shows the damage per second of every spell, casted by the selected player, over time
+\end {enumerate}
+
+\paragraph{Top 5: Evaluation}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Fast decision that \emph{think aloud} is the easiest way to get rapid and valuable feedback
+\item Evaluation should begin after the first Visualization technique is implemented. Rinse and repeat every few days
+\item Everyone should attend to, at least, one World of Warcraft player
+\item \textbf{New Action Item:} Evaluation-Tasks (Deadline: 2012-05-06), Sascha \& Marcel \& Fabian
+\item Everyone has to think about certain tasks for the evaluation
+\end {enumerate}
+
+\paragraph{Top 6: Next Groupmeeting}
+\hfill \\ \hfill \\
+\begin{itemize}
+\item 2012-06-05, 11:15am, HNI F1 Pool
+\end{itemize}
+
+\clearpage
+
+\begin{center}
+{\huge \textbf{Group Meeting 2}}\\
+\end{center}
+\begin{description}
+\item Sascha Brauer \hfill Begin: 2012-06-05, 11:15am 
+\item Fabian Schmauder \hfill End: 2012-06-05, 11:45pm
+\item Marcel Fortmann \hfill Writer: Marcel Fortmann
+\end{description}
+
+\paragraph{Top 1: Parsing}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Done as expected, short briefing
+\end {enumerate}
+
+\paragraph{Top 2: Review the Goals}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item No changes
+\end {enumerate}
+
+\paragraph{Top 3: Visualization Goals}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item No changes
+\item Decision on using hash-maps for the data to be visualized in Line-Graph \& Pie-Chart
+\item \textbf{New Action Item:} Line-Graph template (Deadline: 2012-06-12), Sascha 
+\item \textbf{New Action Item:} Pie-Chart template (Deadline: 2012-06-12), Marcel 
+\item \textbf{New Action Item:} Tool-Tip template (Deadline: 2012-06-12), Fabian 
+\end {enumerate}
+
+\paragraph{Top 4: Evaluation-Tasks}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item Find out, how much overall damage was done by \emph{spell name}!
+\item Which spell did the highest amount of damage?
+\item Which spell did the lowest amount of damage?
+\item Find out, which spells were used by \emph{player name}!
+\item What happened on \emph{timestamp}!
+\item Which player did the most damage per second, taking into account that the encounter started at \emph{timestamp}!
+\end {enumerate}
+
+\paragraph{Top 5: Next Groupmeeting}
+\hfill \\ \hfill \\
+\begin{itemize}
+\item 2012-06-12, 11am, HNI F1 Pool
+\item \textbf{New Action Item:} ToDo in next Groupmeeting: Preparing the Proposal, Fabian \& Marcel \& Sascha
+\end {itemize}
+
+\clearpage
+
+\begin{center}
+{\huge \textbf{Group Meeting 3}}\\
+\end{center}
+\begin{description}
+\item Sascha Brauer \hfill Begin: 2012-06-12, 11am 
+\item Fabian Schmauder \hfill End: 2012-06-12, 11:45pm
+\item Marcel Fortmann \hfill Writer: Marcel Fortmann
+\end{description}
+
+\paragraph{Top 1: Line Graph Template}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item How to find the position for the tooltip. 
+\item  \textbf{New Action Item:} Lie Graph Template: returning information about position, Sascha 
+\end {enumerate}
+
+\paragraph{Top 2: Pie Chart Template}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item How to find the position for the tooltip. 
+\item  \textbf{New Action Item:} Pie Chart Template: returning information about position, Marcel 
+\end {enumerate}
+
+\paragraph{Top 3: Tool-Tip Template}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item \textbf{New Action Item:} Tool Tip Template: Handling the position and information, Fabian 
+\end {enumerate}
+
+\paragraph{Top 4: Preparing the Proposal}
+\hfill \\ \hfill \\
+\begin {enumerate}
+\item done.
+\end {enumerate}
+
+\paragraph{Top 5: Next Groupmeeting}
+\hfill \\ \hfill \\
+2012-06-19, 11am, HNI F1 Pool
+
+\end{document}
