@@ -20,6 +20,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.IntBuffer;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Random;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -121,6 +123,7 @@ public class JoglTemplate extends Frame implements GLEventListener,
 	 * 
 	 * @see javax.media.opengl.GLEventListener#init(javax.media.opengl.GLAutoDrawable)
 	 */
+	SpellSelector spelli;
 	public void init(GLAutoDrawable drawable)
 	{
 		// get a "gl" object. this object provides you with all OpenGL methods
@@ -142,6 +145,30 @@ public class JoglTemplate extends Frame implements GLEventListener,
 			drawable.addMouseWheelListener(this);
 			drawable.addKeyListener(this);
 		}
+		
+		HashMap<String,Integer> data = new HashMap<String,Integer> ();		
+		data.put("Moonfire", 	12365);
+		data.put("Mangle", 		67111);
+		data.put("Shred", 		95751);
+		data.put("Rip", 		67236);
+		data.put("Attack", 		45734);
+		data.put("Rake", 		64644);
+		data.put("Swipe", 		97283);
+		piechart =  new PiechartTemplate(data);
+		
+		HashMap<String,Color> color = new HashMap<String,Color> ();
+		color.put("Moonfire", 	new Color(0.1f,0.1f,0));
+		color.put("Mangle", 	new Color(0.2f,0.2f,0));
+		color.put("Shred", 		new Color(0.3f,0.3f,0));
+		color.put("Rip", 		new Color(0.4f,0.4f,0));
+		color.put("Attack", 	new Color(0.5f,0.5f,0));
+		color.put("Rake", 		new Color(0.6f,0.6f,0));
+		color.put("Swipe", 		new Color(0.7f,0.7f,0));
+		piechart.setColor(color);
+		
+		spelli = new SpellSelector(data);
+		spelli.setVisible(true);
+		
 	}
 
 	/*
@@ -190,6 +217,8 @@ public class JoglTemplate extends Frame implements GLEventListener,
 	 * 
 	 * @see javax.media.opengl.GLEventListener#display(javax.media.opengl.GLAutoDrawable)
 	 */
+	
+	PiechartTemplate piechart;
 	public void display(GLAutoDrawable drawable)
 	{
 		// get the gl object
@@ -202,21 +231,23 @@ public class JoglTemplate extends Frame implements GLEventListener,
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
 
-		
-		
-		
 		HashMap<String,Integer> data = new HashMap<String,Integer> ();		
 		data.put("Moonfire", 	12365);
-		data.put("Mangle", 		12365);
-		data.put("Shred", 		43134);
-		data.put("Rip", 		12426);
-		data.put("Attack", 		95734);
-		data.put("Rake", 		74644);
-		data.put("Swipe", 		57283);
-		piechart_template piechart =  new piechart_template(data);
+		data.put("Mangle", 		67111);
+		data.put("Shred", 		95751);
+		data.put("Rip", 		67236);
+		data.put("Attack", 		45734);
+		data.put("Rake", 		64644);
+		data.put("Swipe", 		97283);
+		LinkedList<String> l = spelli.getNotSelected();
+		for (String k: l){
+			if (data.containsKey(k)){
+				data.remove(k);
+			}
+		}
+		piechart.setData(data);
+		
 		piechart.draw_piechart(gl, glut);
-		
-		
 		
 		
 		gl.glPopMatrix();
@@ -349,6 +380,23 @@ public class JoglTemplate extends Frame implements GLEventListener,
 	 */
 	public void keyPressed(KeyEvent e)
 	{
+		
+		if (e.getKeyCode() == KeyEvent.VK_T){
+			Random r = new Random();
+			float x = r.nextFloat();
+			float y = r.nextFloat();
+			System.out.println("Queueing ("+x+","+y+")");
+			TooltipInformation info = piechart.getInfo(x, y);
+			if (info == null) {
+				System.out.println("Outside of circle");
+				piechart.setFocus("");
+			}
+			else {
+				System.out.println(info.name+" "+info.absolute+" ("+info.additional+"%)");
+				piechart.setFocus(info.name);
+			}
+				
+		}
 		// reset all translations and rotations
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
 		{
