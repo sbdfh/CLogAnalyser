@@ -9,14 +9,17 @@ public class LineGraphLine {
 	
 	public LineGraphLine(float[] data, float yMax){
 		this.data = data.clone();
+		this.yMax = yMax;		
+	}
+	
+	public void setMax (float yMax){
 		this.yMax = yMax;
-				
 	}
 	
 	public void draw(GL gl){
 		gl.glBegin(GL.GL_LINE_STRIP);
 		for (int i = 0; i < data.length; ++i){
-			gl.glVertex2f(i/(data.length-1.0f), data[i] / yMax);		
+			gl.glVertex2f((i/(data.length-1.0f))*LineGraph.WIDTH, data[i] / yMax);		
 		}
 		gl.glEnd();
 	}
