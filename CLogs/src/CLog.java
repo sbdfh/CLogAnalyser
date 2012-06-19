@@ -13,7 +13,7 @@ import javax.swing.PopupFactory;
 
 
 
-public class CLog extends JoglTemplate{
+public class CLog extends JoglTemplate_marcel{
 
 	public static void main(String[] args){ 
 		CLog cLog = new CLog();

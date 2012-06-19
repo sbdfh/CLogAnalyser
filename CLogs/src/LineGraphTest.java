@@ -9,7 +9,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 
 
-public class LineGraphTest extends JoglTemplate {
+public class LineGraphTest extends JoglTemplate_marcel {
 
 	public static HashMap<String, Integer> actors = new HashMap<String, Integer>();
 	public LineGraph graph;
@@ -85,8 +85,8 @@ public class LineGraphTest extends JoglTemplate {
 	{
 		super.init(drawable);			
 		
-		g1 = calcGraph("test.txt");
-		g2 = calcGraph("test2.txt");		
+		g1 = calcGraph("FullCLogExample.txt");
+		g2 = calcGraph("FullCLogExample.txt");		
 		graph = g1;
 	}
 	
