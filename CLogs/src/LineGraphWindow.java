@@ -42,6 +42,9 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		actors.put("Kangee", 0);
 		actors.put("Illiash", 0);
 		actors.put("Spatzenhirn", 0);
+		actors.put("Troublemaker", 0);
+		actors.put("Fellmuh", 0);
+		actors.put("Krümml", 0);
 	    setSize(1200,200);
 	    setResizable(false);
 	    
@@ -124,15 +127,15 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 			entry.name = current.sourceName;
 			map.put(i++, entry);
 		}
-		return new LineGraph(map, 200, 4);
+		return new LineGraph(map, 200, 5);
 	}
 	
 	public void init(GLAutoDrawable drawable)
 	{
 		super.init(drawable);			
 		
-		g1 = calcGraph("FullCLogExample.txt");
-		g2 = calcGraph("FullCLogExample.txt");		
+		g1 = calcGraph("MadnessOfDeathwing.txt");
+		g2 = calcGraph("WarlordZonozz.txt");		
 		graph = g1;
 		
 	}
@@ -152,7 +155,8 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		
 		
-		gl.glTranslatef(-LineGraph.WIDTH/2, -0.5f, 0);		
+		gl.glTranslatef(-LineGraph.WIDTH/2, -1f, 0);	
+		gl.glScalef(1, 2, 1);
 		graph.draw(gl);
 		if(lastX != -1){
 			gl.glColor3f(1, 0, 0);

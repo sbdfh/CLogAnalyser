@@ -33,13 +33,17 @@ public class LineGraph {
 		players.put("Cursia", new Color(0.41f,0.80f,0.94f));
 		players.put("Kangee", new Color(0.77f, 0.12f, 0.23f));
 		players.put("Illiash", new Color(0.78f, 0.61f, 0.43f));
-		players.put("Spatzenhirn", new Color(0.67f, 0.83f, 0.45f));		
+		players.put("Spatzenhirn", new Color(0.67f, 0.83f, 0.45f));	
+		players.put("Troublemaker", new Color(1.00f, 0.96f, 0.41f));
+		players.put("Fellmuh", new Color(0.00f, 0.44f, 0.87f));
+		players.put("Krümml", new Color(0.96f, 0.55f, 0.73f));
 	}
 	
 	protected String focus = "";
 	protected Texture dps;
 	protected HashMap<Integer, LineGraphData> data;
 	protected int steps, numActors, start, end, drawStatus = 0, maxOffset;
+	protected int starttimeOffset = 0, endtimeOffset = 0;
 	protected LineGraphLine[] lines;
 	protected float[][] parsedData;
 	protected float yMax = 0, offsetValue;
@@ -53,7 +57,7 @@ public class LineGraph {
 		calcDuration();
 		invokeDataCalc();		
 		try {			
-			dps = TextureIO.newTexture(new File("src/textures/dps.png"), true);
+			dps = TextureIO.newTexture(new File("dps.png"), true);
 		} catch (Exception e){
 			System.err.println("Error loading Textures");
 		}
@@ -91,6 +95,29 @@ public class LineGraph {
 		if (dist > yMax*0.25f)
 			return null;
 		return ret;
+	}
+	
+	public void increaseStart(){
+		if (endtimeOffset + starttimeOffset >= steps-1)
+			return;
+		++starttimeOffset;
+		refreshLines();
+	}
+	
+	public void decreaseStart(){
+		if (starttimeOffset == 0)
+			return;
+		--starttimeOffset;
+		refreshLines();
+	}
+	
+	protected void refreshLines(){
+		for (int i = 0; i < numActors; ++i){
+			float[] tmp = new float[steps - (starttimeOffset + endtimeOffset)];
+			for (int j = starttimeOffset; j < steps - endtimeOffset; ++j)
+				tmp[j-starttimeOffset] = parsedData[i][j];
+			lines[i] = new LineGraphLine(tmp, yMax);			
+		}
 	}
 	
 	protected void calcDuration(){
@@ -153,7 +180,14 @@ public class LineGraph {
 			gl.glVertex2f(0,i/yMax);
 			gl.glVertex2f(WIDTH, i/yMax);
 			gl.glEnd();
-			gl.glRasterPos2f(-0.2f, i/yMax-0.03f);
+			if (yMax/1000 >= 100 && (i/1000)%20 != 0){
+				i += 10000;
+				continue;
+			}
+			if (i/1000 >= 100)
+				gl.glRasterPos2f(-0.236f, i/yMax-0.03f);
+			else
+				gl.glRasterPos2f(-0.2f, i/yMax-0.03f);
 			glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, Integer.toString(i/1000)+".000");			
 			i += 10000;
 		}
@@ -164,11 +198,17 @@ public class LineGraph {
 			gl.glVertex2f((float)i/(end-start)*WIDTH, 0);
 			gl.glVertex2f((float)i/(end-start)*WIDTH, 1);
 			gl.glEnd();
+			if (end-start >= 600000 && (i/1000)%60 > 10){
+				i+=30*1000;		
+				continue;
+			}
 			gl.glRasterPos2f((float)i/(end-start)*WIDTH-0.075f, -0.1f);			
 			if (i/60000 < 10 && (i/1000)%60 < 10)
 				glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "0"+i/60000+":0"+(i/1000)%60);
 			else if (i/60000 < 10)
 				glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "0"+i/60000+":"+(i/1000)%60);
+			else if ((i/1000)%60 < 10)
+				glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, i/60000+":0"+(i/1000)%60);
 			else
 				glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, i/60000+":"+(i/1000)%60);			
 			i+=30*1000;			
@@ -221,7 +261,7 @@ public class LineGraph {
 		HashMap<String, Integer> assoc = new HashMap<String, Integer>();	
 		int actorsFound = 0, i = 0;	
 		while(actorsFound < numActors){
-			LineGraphData current = data.get(new Integer(i++));
+			LineGraphData current = data.get(new Integer(i++));			
 			if (!assoc.containsKey(current.name)){
 				assocByInt[actorsFound] = current.name;
 				assoc.put(current.name, actorsFound++);	
