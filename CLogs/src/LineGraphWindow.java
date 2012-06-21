@@ -156,7 +156,7 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		
 		
 		gl.glTranslatef(-LineGraph.WIDTH/2, -1f, 0);	
-		gl.glScalef(1, 2, 1);
+		gl.glScalef(1.1f, 2.3f, 1);
 		graph.draw(gl);
 		if(lastX != -1){
 			gl.glColor3f(1, 0, 0);

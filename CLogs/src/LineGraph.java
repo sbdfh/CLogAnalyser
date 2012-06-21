@@ -237,22 +237,22 @@ public class LineGraph {
 		gl.glColor3f(0,0,0);		
 		gl.glBegin(GL.GL_LINE_STRIP);
 		gl.glVertex3f(0, 1.1f, -0.01f);
-		gl.glVertex3f(numActors/10.0f*WIDTH, 1.1f, -0.01f);
-		gl.glVertex3f(numActors/10.0f*WIDTH, 1.3f, -0.01f);
+		gl.glVertex3f(numActors/10.0f*WIDTH*1.2f, 1.1f, -0.01f);
+		gl.glVertex3f(numActors/10.0f*WIDTH*1.2f, 1.3f, -0.01f);
 		gl.glVertex3f(0, 1.3f, -0.01f);
 		gl.glVertex3f(0, 1.1f, -0.01f);
 		gl.glEnd();
 		for (int i = 0; i < numActors; ++i){
 			gl.glColor3f(0,0,0);	
-			gl.glRasterPos2f(i/10.0f*WIDTH+0.05f, 1.175f);
+			gl.glRasterPos2f(i/10.0f*WIDTH*1.1f+0.07f, 1.175f);
 			glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, assocByInt[i]);
 			Color c = players.get(assocByInt[i]);
 			gl.glColor3f(c.r, c.g, c.b);
 			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex2f(i/10.0f*WIDTH, 1.15f);
-			gl.glVertex2f(i/10.0f*WIDTH+0.04f, 1.15f);
-			gl.glVertex2f(i/10.0f*WIDTH+0.04f, 1.25f);
-			gl.glVertex2f(i/10.0f*WIDTH, 1.25f);
+			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.02f, 1.15f);
+			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.06f, 1.15f);
+			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.06f, 1.25f);
+			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.02f, 1.25f);
 			gl.glEnd();
 		}
 	}
