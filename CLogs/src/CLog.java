@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 public class CLog extends JFrame {
 
-	LineGraphWindow windowUp = new LineGraphWindow();
+	LineGraphWindow windowUp = new LineGraphWindow(this);
 	PiechartWindow windowButtom = new PiechartWindow(this);
 
 	public static void main(String[] args) {
@@ -69,6 +69,7 @@ public class CLog extends JFrame {
 		for (String s : data.keySet()) {
 			JCheckBox box = new JCheckBox(s);
 			boxes[i++] = box;
+			box.setBackground(Color.WHITE);
 			box.setSelected(true);
 			spellPanel.add(box);
 		}

@@ -1,3 +1,4 @@
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -10,6 +11,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 
@@ -31,9 +33,18 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 	private float lastX = -1, lastY;
 	private GLCanvas canvas;
 	private FPSAnimator animator;
+	public JLabel toolTipName=new JLabel("Tip");
+	public JLabel toolTipNameLabel=new JLabel("Name: ");
+	public JLabel toolTipAbsolute=new JLabel("Tip");
+	public JLabel toolTipAbsoluteLabel=new JLabel("Absolute:  ");
+	public JLabel toolTipAdditional=new JLabel("Tip");
+	public JLabel toolTipAdditionalLable=new JLabel("Percentage:  ");
+	CLog clog;
 	
-	public LineGraphWindow()
+	
+	public LineGraphWindow(CLog clog)
 	{
+		this.clog=clog;
 		canvas = new GLCanvas();
 		// the DisplayListener is responsible for showing us the graphics
 		canvas.addGLEventListener(this);
@@ -171,8 +182,6 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 	
 	public PopupFactory factory = PopupFactory.getSharedInstance();
 	public Point positionOnScreen;
-	private int toolPositionX=0;
-	private int toolPositionY=0;
 
 	public void mouseMoved(MouseEvent e)
 	{
@@ -183,34 +192,39 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		if(popup!=null){
 			popup.hide();
 		}
-		if(toolTip&&Math.abs(positionOnScreen.x-toolPositionX)>2&&Math.abs(positionOnScreen.y-toolPositionY)>2){
-			toolPositionX=positionOnScreen.x;
-			toolPositionY=positionOnScreen.y;
-			
-		      popup = factory.getPopup(this, this.toolTipLabel, positionOnScreen.x, positionOnScreen.y-10);
-		     
-		      popup.show();
-			}
+		
+		TooltipInformation tooltip=graph.getInfo(mousePosition[0], mousePosition[1]);
+		if(tooltip!=null){
+				toolTipName.setText(tooltip.name);
+				toolTipAbsolute.setText(String.valueOf(tooltip.absolute));
+				toolTipAdditional.setText(String.valueOf(tooltip.additional));
+				JPanel toolTipPanel = new JPanel(new GridLayout(0,2));
+				toolTipPanel.add(toolTipNameLabel);
+				toolTipPanel.add(toolTipName);
+				toolTipPanel.add(toolTipAbsoluteLabel);
+				toolTipPanel.add(toolTipAbsolute);
+				toolTipPanel.add(toolTipAdditionalLable);
+				toolTipPanel.add(toolTipAdditional);
+				popup = factory.getPopup(this,toolTipPanel, positionOnScreen.x, positionOnScreen.y-50);
+			     popup.show();
+		}
+	
 		
 	}
 
 	private float[] calcPosition(Point p) {
-		float xWidth=4.525f;
-		float yWidth=2.77f;
-//		if(height!=this.getHeight()||width!=this.getWidth()){
-//			height=this.getHeight();
-//			width=this.getWidth();
-//			prepareFBO(gl);
-//		}
+		int clogHeight=clog.getHeight()/2;
+		int clogWidth=(clog.getWidth());
+		p.x-=(clog.getWidth()/10);
+		p.y-=(clog.getHeight()/19);
 		float[] position=new float[2];
-		position[0]=(float)((float)p.x/(float)width)*2.0f*xWidth-xWidth;
-		position[1]=(float)((float)p.y/(float)height)*2.0f*yWidth-yWidth;
-		position[1]*=(-1);
+		position[0]=((float)p.x/((float)clogWidth))*1.14f;
+		position[1]=1-(float)p.y/((float)clogHeight)*1.5f;
+		if(position[0]>1){
+			position[0]=-1.0f;
+		}
 		return position;
 	}
-	
-
-	
 	 
 	 public void mouseClicked(MouseEvent e)
 	{
