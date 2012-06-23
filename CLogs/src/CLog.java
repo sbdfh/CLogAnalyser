@@ -14,6 +14,7 @@ public class CLog extends JFrame {
 
 	LineGraphWindow windowUp = new LineGraphWindow(this);
 	PiechartWindow windowButtom = new PiechartWindow(this);
+	JPanel spellPanel;
 
 	public static void main(String[] args) {
 		CLog log2 = new CLog();
@@ -51,28 +52,9 @@ public class CLog extends JFrame {
 		JPanel bottomPanel = new JPanel(new GridLayout(0, 2));
 
 		JPanel piechartPanel = new JPanel(new BorderLayout());
-		JPanel spellPanel = new JPanel(new FlowLayout());
+		spellPanel = new JPanel(new FlowLayout());
 		spellPanel.setBackground(Color.WHITE);
-
-		HashMap<String, Integer> data = new HashMap<String, Integer>();
-		data.put("Moonfire", 12365);
-		data.put("Mangle", 67111);
-		data.put("Shred", 95751);
-		data.put("Rip", 67236);
-		data.put("Attack", 45734);
-		data.put("Rake", 64644);
-		data.put("Swipe", 97283);
-
-		boxes = new JCheckBox[data.size()];
-
-		int i = 0;
-		for (String s : data.keySet()) {
-			JCheckBox box = new JCheckBox(s);
-			boxes[i++] = box;
-			box.setBackground(Color.WHITE);
-			box.setSelected(true);
-			spellPanel.add(box);
-		}
+		
 		piechartPanel.add(spellPanel, BorderLayout.CENTER);
 		bottomPanel.add(piechartPanel);
 		bottomPanel.add(windowButtom.getCanvas());
@@ -82,6 +64,22 @@ public class CLog extends JFrame {
 
 		add(mainPanel);
 
+	}
+	
+	public void setCheckBoxes(HashMap<String, Integer> data){
+		spellPanel.removeAll();
+		boxes = new JCheckBox[data.size()];
+	
+		int i = 0;
+		for (String s : data.keySet()) {			
+			JCheckBox box = new JCheckBox(s);
+			boxes[i++] = box;
+			box.setBackground(Color.WHITE);
+			box.setSelected(true);
+			spellPanel.add(box);
+		}
+		spellPanel.revalidate();
+		spellPanel.repaint();
 	}
 
 	public LinkedList<String> getNotSelected() {

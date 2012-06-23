@@ -14,40 +14,32 @@ public class LineGraph {
 
 	public static final int WIDTH = 4;
 	
-	protected static class Color{
-		float r, g, b;
-		
-		public Color(float r, float g, float b){
-			this.r = r;
-			this.g = g;
-			this.b = b;
-		}
-	}
 	
 	protected static GLUT glut = new GLUT();
 	
-	protected static final HashMap<String, Color> players;
+	protected static final HashMap<String, Color> colors;
+	
+	protected static Texture dps;
 	
 	static{
-		players = new HashMap<String,Color>();
-		players.put("Cursia", new Color(0.41f,0.80f,0.94f));
-		players.put("Kangee", new Color(0.77f, 0.12f, 0.23f));
-		players.put("Illiash", new Color(0.78f, 0.61f, 0.43f));
-		players.put("Spatzenhirn", new Color(0.67f, 0.83f, 0.45f));	
-		players.put("Troublemaker", new Color(1.00f, 0.96f, 0.41f));
-		players.put("Fellmuh", new Color(0.00f, 0.44f, 0.87f));
-		players.put("Krümml", new Color(0.96f, 0.55f, 0.73f));
+		try {			
+			dps = TextureIO.newTexture(new File("dps.png"), true);
+		} catch (Exception e){
+			System.err.println("Error loading Textures");
+		}
+		colors = new ClassColors().ccolor;
 	}
 	
-	protected String focus = "";
-	protected Texture dps;
+	protected String focus = "";	
 	protected HashMap<Integer, LineGraphData> data;
+	protected HashMap<String, Integer> pieData;
 	protected int steps, numActors, start, end, drawStatus = 0, maxOffset;
 	protected int starttimeOffset = 0, endtimeOffset = 0;
 	protected LineGraphLine[] lines;
 	protected float[][] parsedData;
 	protected float yMax = 0, offsetValue;
 	protected String[] assocByInt;
+	protected LinkedList<String> notDraw = new LinkedList<String>();
 	
 	public LineGraph(HashMap<Integer, LineGraphData> data, int steps, int numActors){
 		this.data = data;
@@ -56,12 +48,11 @@ public class LineGraph {
 		assocByInt = new String[numActors];
 		calcDuration();
 		invokeDataCalc();		
-		try {			
-			dps = TextureIO.newTexture(new File("dps.png"), true);
-		} catch (Exception e){
-			System.err.println("Error loading Textures");
-		}
 	
+	}
+	
+	public String[] getActors(){
+		return assocByInt;
 	}
 	
 	public void setSteps(int steps){
@@ -70,6 +61,27 @@ public class LineGraph {
 	
 	public void setFocus(String name){
 		focus = name;
+	}
+	
+	public HashMap<String, Integer> getFullPieData(){
+		return pieData;
+	}
+	
+	public HashMap<String, Integer> getPieData(){
+		HashMap<String, Integer> ret = new HashMap<String, Integer>(pieData);
+		for (int i = 0; i < notDraw.size(); ++i)
+			ret.remove(notDraw.get(i));
+		return ret;
+	}
+	
+	protected void calcPieData(){
+		pieData = new HashMap<String, Integer>();
+		for (int i = 0; i < assocByInt.length; ++i)
+			pieData.put(assocByInt[i], 0);
+		for (int i = 0; i < data.size(); ++i){
+			LineGraphData current = data.get(i);
+			pieData.put(current.name, pieData.get(current.name)+current.amount);
+		}
 	}
 	
 	public void deDraw(){
@@ -85,14 +97,16 @@ public class LineGraph {
 		float[] values = new float[numActors];
 		for (int i = 0; i < numActors; ++i)			
 			values[i] = (float)(x*steps - Math.floor(x*steps))*parsedData[i][(int)Math.floor(x*steps)]+(float)(Math.ceil(x*steps)-x*steps)*parsedData[i][(int)Math.ceil(x*steps)];
-		float target = yMax*y, dist = yMax*0.25f+1;
+		float target = yMax*y, dist = yMax*0.1f+1;
 		for (int i = 0; i < numActors; ++i)
 			if (Math.abs(values[i]-target) < dist){
 				dist = Math.abs(values[i]-target);
 				ret.absolute = (int)values[i];
 				ret.name = assocByInt[i];
 			}
-		if (dist > yMax*0.25f)
+		if (dist > yMax*0.1f)
+			return null;
+		if (notDraw.contains(ret.name))
 			return null;
 		return ret;
 	}
@@ -151,16 +165,26 @@ public class LineGraph {
 		gl.glLineWidth(2);
 		drawGrid(gl);
 		drawKey(gl);
-		gl.glLineWidth(4);				
-		for (int i = 0; i < numActors; ++i){					
+		gl.glLineWidth(4);			
+		int j = 0;
+		for (int i = 0; i < numActors; ++i){
+			if (notDraw.contains(assocByInt[i]))
+				continue;
+			if(assocByInt[i].equals(focus))
+				j = i;
 			if ("".equals(focus) || assocByInt[i].equals(focus) || drawStatus != 2){
-				Color c = players.get(assocByInt[i]);
+				Color c = colors.get(assocByInt[i]);
 				gl.glColor3f(c.r, c.g, c.b);
 			}
 			else
 				gl.glColor3f(0.85f, 0.85f, 0.85f);
 			lines[i].setMax(yMax+(float)Math.pow(maxOffset/25.0, 4)*offsetValue);			
 			lines[i].draw(gl);
+		}
+		if (!"".equals(focus)){
+			Color c = colors.get(assocByInt[j]);
+			gl.glColor3f(c.r, c.g, c.b);
+			lines[j].draw(gl);
 		}
 	}
 	
@@ -185,9 +209,9 @@ public class LineGraph {
 				continue;
 			}
 			if (i/1000 >= 100)
-				gl.glRasterPos2f(-0.236f, i/yMax-0.03f);
+				gl.glRasterPos2f(-0.306f, i/yMax-0.03f);
 			else
-				gl.glRasterPos2f(-0.2f, i/yMax-0.03f);
+				gl.glRasterPos2f(-0.27f, i/yMax-0.03f);
 			glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, Integer.toString(i/1000)+".000");			
 			i += 10000;
 		}
@@ -222,37 +246,44 @@ public class LineGraph {
 		dps.bind();	
 		gl.glBegin(GL.GL_QUADS);
 		gl.glTexCoord2f(0, 0);
-		gl.glVertex2f(-0.35f, 0.35f);
+		gl.glVertex2f(-0.45f, 0.35f);
 		gl.glTexCoord2f(0, 1);
-		gl.glVertex2f(-0.25f, 0.35f);
+		gl.glVertex2f(-0.35f, 0.35f);
 		gl.glTexCoord2f(1, 1);
-		gl.glVertex2f(-0.25f, 0.7f);
-		gl.glTexCoord2f(1, 0);
 		gl.glVertex2f(-0.35f, 0.7f);
+		gl.glTexCoord2f(1, 0);
+		gl.glVertex2f(-0.45f, 0.7f);
 		gl.glEnd();
 		gl.glDisable(GL.GL_TEXTURE_2D);
 	}
 	
 	protected void drawKey(GL gl){
-		gl.glColor3f(0,0,0);		
-		gl.glBegin(GL.GL_LINE_STRIP);
-		gl.glVertex3f(0, 1.1f, -0.01f);
-		gl.glVertex3f(numActors/10.0f*WIDTH*1.2f, 1.1f, -0.01f);
-		gl.glVertex3f(numActors/10.0f*WIDTH*1.2f, 1.3f, -0.01f);
-		gl.glVertex3f(0, 1.3f, -0.01f);
-		gl.glVertex3f(0, 1.1f, -0.01f);
-		gl.glEnd();
-		for (int i = 0; i < numActors; ++i){
+		gl.glColor3f(0,0,0);
+		int i;
+		for (i = 0; i < numActors && i < 6; ++i){
 			gl.glColor3f(0,0,0);	
-			gl.glRasterPos2f(i/10.0f*WIDTH*1.1f+0.07f, 1.175f);
-			glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, assocByInt[i]);
-			Color c = players.get(assocByInt[i]);
+			gl.glRasterPos2f(i/7.0f*WIDTH*1.2f+0.07f, 1.075f);
+			glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, assocByInt[i]);
+			Color c = colors.get(assocByInt[i]);
 			gl.glColor3f(c.r, c.g, c.b);
 			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.02f, 1.15f);
-			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.06f, 1.15f);
-			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.06f, 1.25f);
-			gl.glVertex2f(i/10.0f*WIDTH*1.1f+0.02f, 1.25f);
+			gl.glVertex2f(i/7.0f*WIDTH*1.2f+0.02f, 1.05f);
+			gl.glVertex2f(i/7.0f*WIDTH*1.2f+0.06f, 1.05f);
+			gl.glVertex2f(i/7.0f*WIDTH*1.2f+0.06f, 1.15f);
+			gl.glVertex2f(i/7.0f*WIDTH*1.2f+0.02f, 1.15f);
+			gl.glEnd();
+		}
+		for(; i < numActors; ++i){
+			gl.glColor3f(0,0,0);	
+			gl.glRasterPos2f((i-6)/7.0f*WIDTH*1.2f+0.07f, 1.175f);
+			glut.glutBitmapString(GLUT.BITMAP_HELVETICA_18, assocByInt[i]);
+			Color c = colors.get(assocByInt[i]);
+			gl.glColor3f(c.r, c.g, c.b);
+			gl.glBegin(GL.GL_QUADS);
+			gl.glVertex2f((i-6)/7.0f*WIDTH*1.2f+0.02f, 1.15f);
+			gl.glVertex2f((i-6)/7.0f*WIDTH*1.2f+0.06f, 1.15f);
+			gl.glVertex2f((i-6)/7.0f*WIDTH*1.2f+0.06f, 1.25f);
+			gl.glVertex2f((i-6)/7.0f*WIDTH*1.2f+0.02f, 1.25f);
 			gl.glEnd();
 		}
 	}
@@ -261,7 +292,7 @@ public class LineGraph {
 		HashMap<String, Integer> assoc = new HashMap<String, Integer>();	
 		int actorsFound = 0, i = 0;	
 		while(actorsFound < numActors){
-			LineGraphData current = data.get(new Integer(i++));			
+			LineGraphData current = data.get(new Integer(i++));	
 			if (!assoc.containsKey(current.name)){
 				assocByInt[actorsFound] = current.name;
 				assoc.put(current.name, actorsFound++);	
@@ -288,6 +319,7 @@ public class LineGraph {
 			++yMax;
 		for (i = 0; i < numActors; ++i)
 			lines[i] = new LineGraphLine(parsedData[i], yMax);
+		calcPieData();
 	}
 	
 	protected void calcDPS(LinkedList<LineGraphData> sortedData, int actor){

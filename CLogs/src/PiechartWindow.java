@@ -105,21 +105,6 @@ public class PiechartWindow extends JoglTemplate_fabian{
 		applyMouseTranslation(gl);
 		applyMouseRotation(gl);
 
-		HashMap<String,Integer> data = new HashMap<String,Integer> ();		
-		data.put("Moonfire", 	12365);
-		data.put("Mangle", 		67111);
-		data.put("Shred", 		95751);
-		data.put("Rip", 		67236);
-		data.put("Attack", 		45734);
-		data.put("Rake", 		64644);
-		data.put("Swipe", 		97283);
-		LinkedList<String> l = clog.getNotSelected();
-		for (String k: l){
-			if (data.containsKey(k)){
-				data.remove(k);
-			}
-		}
-		piechart.setData(data);
 		
 		piechart.draw_piechart(gl, glut);
 		
@@ -170,7 +155,7 @@ public class PiechartWindow extends JoglTemplate_fabian{
 				toolTipPanel.add(toolTipAdditionalLable);
 				toolTipPanel.add(toolTipAdditional);
 				popup = factory.getPopup(this,toolTipPanel, positionOnScreen.x, positionOnScreen.y-50);
-			     popup.show();
+			    popup.show();
 		}
 	
 		

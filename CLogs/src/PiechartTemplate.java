@@ -10,6 +10,7 @@ public class PiechartTemplate {
 	public static float TESSELATION = 50;
 	private HashMap<String,Color> color;
 	private String focus = "";
+	private float lastX=0, lastY=0;
 	
 
 	public PiechartTemplate (HashMap<String,Integer> datamap){
@@ -33,17 +34,24 @@ public class PiechartTemplate {
 	
 	public void draw_piechart(GL gl, GLUT glut){
 		
-		for (Map.Entry<String,Integer> entry : data.entrySet()) {
-			float prozent = (entry.getValue()*100.0f)/sum_damage;
-			float winkel = prozent*360f/100f;
-			pie(gl, glut, winkel, prozent, entry.getKey());
-		}
 		
+		for (Map.Entry<String,Integer> entry : data.entrySet()) {
+			float prozent = (entry.getValue())/(float)sum_damage;
+			float winkel = prozent*360f;				
+			pie(gl, glut, winkel, prozent, entry.getKey());
+		}		
+		gl.glPointSize(6);
+		gl.glColor3f(1,0,0);
+		gl.glBegin(GL.GL_POINTS);
+		gl.glVertex2f(lastX, lastY);
+		gl.glEnd();
 	}
 	
 	public TooltipInformation getInfo (float x, float y){
 		TooltipInformation ttinfo  = new TooltipInformation();
 		float arc = 0;
+		lastX = x;
+		lastY = y;
 		x = x*2f-1f;
 		y = y*2f-1f;
 		float laenge = (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
@@ -83,31 +91,32 @@ public class PiechartTemplate {
 	
 	public void pie (GL gl, GLUT glut, float winkel, float prozent, String name){
 		
+		Color farbe = color.get(name);
+		if ("".equals(focus) || name.equals(focus)){
+			gl.glColor3f(farbe.r, farbe.g, farbe.b);
+		} else {
+			gl.glColor3f(0.85f, 0.85f, 0.85f);
+		}
+		
 		while (winkel>90){
 			gl.glBegin(GL.GL_POLYGON);	
 			gl.glVertex3f(0, 0, 0);
 			gl.glVertex3f(0, 1, 0);
-			float x = 0;
-			while (x <= TESSELATION){
+			float x = 0;			
+			while (x < TESSELATION){				
 				++x;
 				float xP = x/TESSELATION;
 				gl.glVertex3f(xP, (float)Math.sqrt(1-xP*xP), 0);
-			}
+			}			
 			gl.glEnd();	
 			gl.glRotatef(-90, 0, 0, 1);
 			winkel -= 90;
 		}
 		
 		gl.glBegin(GL.GL_POLYGON);
-			Color farbe = color.get(name);
-			if ("".equals(focus) || name.equals(focus)){
-				gl.glColor3f(farbe.r, farbe.g, farbe.b);
-			} else {
-				gl.glColor3f(0.8f, 0.8f, 0.8f);
-			}
 			gl.glVertex3f(0, 0, 0);
-			gl.glVertex3f(0, 1, 0);
-			float x= 0,  d=(float)Math.sin(winkel/180f*Math.PI);
+			gl.glVertex3f(0, 1, 0);			
+			float x= 0,  d=(float)Math.sin(winkel/180f*Math.PI);			
 			while (x < d*TESSELATION){
 				++x;
 				float xP = x/TESSELATION;

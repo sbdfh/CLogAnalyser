@@ -19,8 +19,8 @@ import com.sun.opengl.util.FPSAnimator;
 
 
 public class LineGraphWindow extends JoglTemplate_fabian{
-
-	public static HashMap<String, Integer> actors = new HashMap<String, Integer>();
+		
+	
 	int width=1200;
 	int height=200/2;
 	private Popup popup;
@@ -36,10 +36,12 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 	public JLabel toolTipName=new JLabel("Tip");
 	public JLabel toolTipNameLabel=new JLabel("Name: ");
 	public JLabel toolTipAbsolute=new JLabel("Tip");
-	public JLabel toolTipAbsoluteLabel=new JLabel("Absolute:  ");
+	public JLabel toolTipAbsoluteLabel=new JLabel("DPS:  ");
 	public JLabel toolTipAdditional=new JLabel("Tip");
-	public JLabel toolTipAdditionalLable=new JLabel("Percentage:  ");
+	public JLabel toolTipAdditionalLable=new JLabel("Time:  ");
 	CLog clog;
+	protected HashMap<String, LineGraph> encounters = new HashMap<String, LineGraph>();
+	protected HashMap<String, LineGraph> detailGraphs = new HashMap<String, LineGraph>();
 	
 	
 	public LineGraphWindow(CLog clog)
@@ -49,13 +51,6 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		// the DisplayListener is responsible for showing us the graphics
 		canvas.addGLEventListener(this);
 		animator = new FPSAnimator(canvas, 60);
-		actors.put("Cursia", 0);
-		actors.put("Kangee", 0);
-		actors.put("Illiash", 0);
-		actors.put("Spatzenhirn", 0);
-		actors.put("Troublemaker", 0);
-		actors.put("Fellmuh", 0);
-		actors.put("Krümml", 0);
 	    setSize(1200,200);
 	    setResizable(false);
 	    
@@ -72,7 +67,7 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 //	}	
 
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_C){
+		/*if (e.getKeyCode() == KeyEvent.VK_C){
 			g1.setFocus("Cursia");
 			g2.setFocus("Cursia");
 		}
@@ -102,8 +97,10 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 				System.out.println("Miss");
 			else
 				System.out.println(info.name+" at "+info.additional+" done "+info.absolute);
-		}
+		}*/
+				
 	}
+	
 	public GLCanvas getCanvas() {
 		return canvas;
 	}
@@ -120,8 +117,27 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 				animator.stop();
 	}
 	
+	public void setGraph(String path){
+		graph = encounters.get(path);
+		graph.notDraw = new LinkedList<String>();
+		clog.windowButtom.piechart.setData(graph.getFullPieData());
+		clog.windowButtom.piechart.setColor(graph.colors);
+		clog.setCheckBoxes(graph.getFullPieData());
+		graph.deDraw();
+	}
 	
-	public LineGraph calcGraph(String path){
+	public void setDetailedGraph(String path, String actor){
+		graph = detailGraphs.get(path+actor);
+		graph.notDraw = new LinkedList<String>();
+		clog.windowButtom.piechart.setData(graph.getFullPieData());
+		clog.windowButtom.piechart.setColor(graph.colors);
+		clog.setCheckBoxes(graph.getFullPieData());
+		graph.deDraw();
+	}
+	
+	protected LineGraph calcGraph(String path){
+		HashMap<String, Color> actors = LineGraph.colors;
+		HashMap<String, Integer> found = new HashMap<String, Integer>();
 		CLogParser p = new CLogParser(path);
 		p.parse();
 		LinkedList<CLogEntry> log = p.getLog();
@@ -132,23 +148,66 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 			CLogEntry current = it.next();
 			if (current.suf != CLogEntry.Suffix.DAMAGE || !actors.containsKey(current.sourceName))
 				continue;
+			if (!found.containsKey(current.sourceName))
+				found.put(current.sourceName, 0);
 			LineGraphData entry = new LineGraphData();
 			entry.hour = current.hour; entry.minute = current.minute; entry.second = current.second; entry.millis = current.millis;
 			entry.amount = current.amount;
 			entry.name = current.sourceName;
 			map.put(i++, entry);
 		}
-		return new LineGraph(map, 200, 5);
+		return new LineGraph(map, 200, found.size());
+	}
+	
+	protected LineGraph calcDetailedGraph (String path, String actor){
+		HashMap<String, Color> actors = LineGraph.colors;
+		HashMap<String, Integer> found = new HashMap<String, Integer>();
+		CLogParser p = new CLogParser(path);
+		p.parse();
+		LinkedList<CLogEntry> log = p.getLog();
+		HashMap<Integer, LineGraphData> map = new HashMap<Integer, LineGraphData>();
+		ListIterator<CLogEntry> it = log.listIterator();
+		int i = 0;
+		while (it.hasNext()){
+			CLogEntry current = it.next();		
+			if ((current.pre == CLogEntry.Prefix.SWING || current.pre == CLogEntry.Prefix.RANGE)&& current.suf == CLogEntry.Suffix.DAMAGE)
+				current.spellName = "Attack";			
+			if (current.sourceName == null)
+				continue;
+			if (current.suf != CLogEntry.Suffix.DAMAGE || !actors.containsKey(current.spellName) || !current.sourceName.equals(actor))
+				continue;		
+			if (!found.containsKey(current.spellName))
+				found.put(current.spellName, 0);
+			LineGraphData entry = new LineGraphData();
+			entry.hour = current.hour; entry.minute = current.minute; entry.second = current.second; entry.millis = current.millis;
+			entry.amount = current.amount;			
+			entry.name = current.spellName;				
+			map.put(i++, entry);
+		}
+		return new LineGraph(map, 200, found.size());
+	}
+	
+	protected void calcDetails(String encounter){
+		String[] actors = encounters.get(encounter).getActors();
+		for (int i = 0; i < actors.length; ++i){
+			detailGraphs.put(encounter+actors[i], calcDetailedGraph(encounter, actors[i]));
+		}
 	}
 	
 	public void init(GLAutoDrawable drawable)
 	{
 		super.init(drawable);			
 		
-		g1 = calcGraph("MadnessOfDeathwing.txt");
+		/*g1 = calcGraph("MadnessOfDeathwing.txt");
 		g2 = calcGraph("WarlordZonozz.txt");		
-		graph = g1;
-		
+		graph = g1;*/		
+		encounters.put("MadnessOfDeathwing.txt", calcGraph("MadnessOfDeathwing.txt"));
+		encounters.put("WarlordZonozz.txt", calcGraph("WarlordZonozz.txt"));
+		calcDetails("MadnessOfDeathwing.txt");
+		calcDetails("WarlordZonozz.txt");
+		graph = encounters.get("WarlordZonozz.txt");
+		graph.deDraw();		
+		clog.setCheckBoxes(graph.getFullPieData());
 	}
 	
 	public void display(GLAutoDrawable drawable)
@@ -168,6 +227,19 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		
 		gl.glTranslatef(-LineGraph.WIDTH/2, -1f, 0);	
 		gl.glScalef(1.1f, 2.3f, 1);
+		
+		// Remove unchecked
+		LinkedList<String> removed = new LinkedList<String>();
+		for (int i = 0; i < graph.numActors; ++i){
+			if (!clog.boxes[i].isSelected())
+				removed.add(clog.boxes[i].getText());			
+		}
+		graph.notDraw = removed;
+		if (clog.windowButtom.piechart != null){
+			clog.windowButtom.piechart.setData(graph.getPieData());
+			clog.windowButtom.piechart.setColor(graph.colors);			
+		}
+		
 		graph.draw(gl);
 		if(lastX != -1){
 			gl.glColor3f(1, 0, 0);
@@ -182,7 +254,8 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 	
 	public PopupFactory factory = PopupFactory.getSharedInstance();
 	public Point positionOnScreen;
-
+	
+	
 	public void mouseMoved(MouseEvent e)
 	{
 		Point p=e.getPoint();
@@ -194,10 +267,16 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		}
 		
 		TooltipInformation tooltip=graph.getInfo(mousePosition[0], mousePosition[1]);
+		if (tooltip == null){
+			graph.setFocus("");
+			clog.windowButtom.piechart.setFocus("");
+		}
 		if(tooltip!=null){
+				graph.setFocus(tooltip.name);
+				clog.windowButtom.piechart.setFocus(tooltip.name);
 				toolTipName.setText(tooltip.name);
 				toolTipAbsolute.setText(String.valueOf(tooltip.absolute));
-				toolTipAdditional.setText(String.valueOf(tooltip.additional));
+				toolTipAdditional.setText(String.valueOf(tooltip.additional/60000)+":"+String.valueOf((tooltip.additional%60000)/1000)+":"+String.valueOf(tooltip.additional%1000));
 				JPanel toolTipPanel = new JPanel(new GridLayout(0,2));
 				toolTipPanel.add(toolTipNameLabel);
 				toolTipPanel.add(toolTipName);
@@ -226,10 +305,37 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		return position;
 	}
 	 
+	String path = "WarlordZonozz.txt";
+	
 	 public void mouseClicked(MouseEvent e)
 	{
-    	
-    
+    	if (e.getButton() == MouseEvent.BUTTON1){
+    		Point p=e.getPoint();
+    		positionOnScreen=e.getLocationOnScreen();
+    		mousePosition= calcPosition(p);
+    		TooltipInformation tooltip=graph.getInfo(mousePosition[0], mousePosition[1]);
+    		if (tooltip != null){
+    			setDetailedGraph(path, tooltip.name);
+    			graph.setFocus("");
+    			clog.windowButtom.piechart.setFocus("");
+    		}
+    	}
+    	if (e.getButton() == MouseEvent.BUTTON2){
+    		if ("WarlordZonozz.txt".equals(path))
+    			path = "MadnessOfDeathwing.txt";
+    		else
+    			path = "WarlordZonozz.txt";
+    		setGraph(path);
+    		graph.setFocus("");
+			clog.windowButtom.piechart.setFocus("");
+    	}
+    	if (e.getButton() == MouseEvent.BUTTON3){
+    		setGraph(path);
+    		graph.setFocus("");
+			clog.windowButtom.piechart.setFocus("");
+    	}
+    		
+		 
    
     
       
