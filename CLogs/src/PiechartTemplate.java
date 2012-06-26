@@ -40,44 +40,44 @@ public class PiechartTemplate {
 			float winkel = prozent*360f;				
 			pie(gl, glut, winkel, prozent, entry.getKey());
 		}		
-		gl.glPointSize(6);
+		/*gl.glPointSize(6);
 		gl.glColor3f(1,0,0);
 		gl.glBegin(GL.GL_POINTS);
 		gl.glVertex2f(lastX, lastY);
-		gl.glEnd();
+		gl.glEnd();*/
 	}
 	
 	public TooltipInformation getInfo (float x, float y){
 		TooltipInformation ttinfo  = new TooltipInformation();
 		float arc = 0;
-		lastX = x;
-		lastY = y;
 		x = x*2f-1f;
 		y = y*2f-1f;
+		lastX = x;
+		lastY = y;
 		float laenge = (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		if (x*x + y*y > 1){
 			return null;
 		} else {
 			if (x > 0 && y > 0){
-				arc = (float)(Math.acos(y/laenge)/Math.PI*90);	
+				arc = (float)(Math.acos(y/laenge)/Math.PI*180);	
 			}
 			if (x > 0 && y < 0){
-				arc = (float)(Math.acos(x/laenge)/Math.PI*90) + 90f;
+				arc = (float)(Math.acos(x/laenge)/Math.PI*180) + 90f;
 			}
 			if (x < 0 && y < 0){
-				arc = (float)(Math.acos(y/laenge)/Math.PI*90) + 180f;
+				arc = (float)(-Math.acos(y/laenge)/Math.PI*180) + 360f;
 			}
 			if (x < 0 && y > 0){
-				arc = (float)(Math.acos(x/laenge)/Math.PI*90) + 270f;
-			}
+				arc = (float)(-Math.acos(x/laenge)/Math.PI*180) + 450f;
+			}	
 			float winkel = 0;
 			for (Map.Entry<String,Integer> entry : data.entrySet()) {
-				float prozent = (entry.getValue()*100.0f)/sum_damage;
-				winkel += prozent*360f/100f;
+				float prozent = (entry.getValue())/(float)sum_damage;
+				winkel += prozent*360f;
 				if (winkel > arc) {
 					ttinfo.absolute = entry.getValue();
 					ttinfo.name = entry.getKey();
-					ttinfo.additional = (int)prozent;
+					ttinfo.additional = (int)(prozent*100);
 					return ttinfo;
 				}
 			}
