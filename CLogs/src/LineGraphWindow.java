@@ -276,7 +276,7 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 				clog.windowButtom.piechart.setFocus(tooltip.name);
 				toolTipName.setText(tooltip.name);
 				toolTipAbsolute.setText(String.valueOf(tooltip.absolute));
-				toolTipAdditional.setText(String.valueOf(tooltip.additional/60000)+":"+String.valueOf((tooltip.additional%60000)/1000)+":"+String.valueOf(tooltip.additional%1000));
+				toolTipAdditional.setText(String.valueOf(tooltip.additional/60000)+":"+(((tooltip.additional%60000)/1000)<10?"0":"")+String.valueOf((tooltip.additional%60000)/1000)+":"+String.valueOf(tooltip.additional%1000));
 				JPanel toolTipPanel = new JPanel(new GridLayout(0,2));
 				toolTipPanel.add(toolTipNameLabel);
 				toolTipPanel.add(toolTipName);
@@ -314,7 +314,8 @@ public class LineGraphWindow extends JoglTemplate_fabian{
     		positionOnScreen=e.getLocationOnScreen();
     		mousePosition= calcPosition(p);
     		TooltipInformation tooltip=graph.getInfo(mousePosition[0], mousePosition[1]);
-    		if (tooltip != null){
+    		if (tooltip != null&&!clog.detaildGraph){
+    			clog.detaildGraph=true;
     			setDetailedGraph(path, tooltip.name);
     			graph.setFocus("");
     			clog.windowButtom.piechart.setFocus("");
@@ -330,6 +331,7 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 			clog.windowButtom.piechart.setFocus("");
     	}
     	if (e.getButton() == MouseEvent.BUTTON3){
+    		clog.detaildGraph=false;
     		setGraph(path);
     		graph.setFocus("");
 			clog.windowButtom.piechart.setFocus("");

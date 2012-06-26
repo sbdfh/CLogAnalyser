@@ -15,6 +15,7 @@ public class CLog extends JFrame {
 	LineGraphWindow windowUp = new LineGraphWindow(this);
 	PiechartWindow windowButtom = new PiechartWindow(this);
 	JPanel spellPanel;
+	boolean detaildGraph=false;
 
 	public static void main(String[] args) {
 		CLog log2 = new CLog();

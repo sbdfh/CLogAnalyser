@@ -143,7 +143,14 @@ public class PiechartWindow extends JoglTemplate_fabian{
 		}
 		
 		TooltipInformation tooltip=piechart.getInfo(mousePosition[0], mousePosition[1]);
+		if (tooltip == null){
+			clog.windowUp.graph.setFocus("");
+			clog.windowButtom.piechart.setFocus("");
+		}
+		
 		if(tooltip!=null){
+				clog.windowUp.graph.setFocus(tooltip.name);
+				piechart.setFocus(tooltip.name);
 				toolTipName.setText(tooltip.name);
 				toolTipAbsolute.setText(String.valueOf(tooltip.absolute));
 				toolTipAdditional.setText(String.valueOf(tooltip.additional));
@@ -179,5 +186,43 @@ public class PiechartWindow extends JoglTemplate_fabian{
 		
 		return position;
 	}
+	String path = "WarlordZonozz.txt";
+	 public void mouseClicked(MouseEvent e)
+		{
+	    	if (e.getButton() == MouseEvent.BUTTON1){
+	    		Point p=e.getPoint();
+	    		positionOnScreen=e.getLocationOnScreen();
+	    		mousePosition= calcPosition(p);
+	    		TooltipInformation tooltip=piechart.getInfo(mousePosition[0], mousePosition[1]);
+	    		if (tooltip != null&&!clog.detaildGraph){
+	    			clog.detaildGraph=true;
+	    			clog.windowUp.setDetailedGraph(path, tooltip.name);
+	    			clog.windowUp.graph.setFocus("");
+	    			piechart.setFocus("");
+	    		}
+	    	}
+	    	if (e.getButton() == MouseEvent.BUTTON2){
+	    		if ("WarlordZonozz.txt".equals(path))
+	    			path = "MadnessOfDeathwing.txt";
+	    		else
+	    			path = "WarlordZonozz.txt";
+	    		
+	    		clog.windowUp.setGraph(path);
+	    		clog.windowUp.graph.setFocus("");
+				piechart.setFocus("");
+	    	}
+	    	if (e.getButton() == MouseEvent.BUTTON3){
+	    		clog.detaildGraph=false;
+	    		clog.windowUp.setGraph(path);
+	    		clog.windowUp.graph.setFocus("");
+				piechart.setFocus("");
+	    	}
+	    		
+			 
+	   
+	    
+	      
+	        
+	    }
 	
 }
