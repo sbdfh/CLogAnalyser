@@ -164,11 +164,18 @@ public class PiechartWindow extends JoglTemplate_fabian{
 	private float[] calcPosition(Point p) {
 		int clogHeight=clog.getHeight()/2;
 		int clogWidth=(clog.getWidth()/2);
-		p.x-=(clog.getWidth()/7.5);
-		p.y-=(clog.getHeight()/19);
+		
+
 		float[] position=new float[2];
-		position[0]=((float)p.x/((float)clogWidth))*2;
-		position[1]=1-(float)p.y/((float)clogHeight)*1.5f;
+		position[0]=((float)p.x/((float)clogWidth));
+		position[1]=1-(float)p.y/((float)clogHeight);
+		
+		position[0]=((position[0]-0.5f)*((float)clogWidth/(float)clogHeight)*1.4f)+0.5f;
+		if(position[1]<0.5){
+			position[1]=((position[1]-0.5f)*1.5f)+0.5f;
+		}else{
+			position[1]=((position[1]-0.5f)*1.3f)+0.5f;
+		}
 		
 		return position;
 	}
