@@ -124,6 +124,7 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		clog.windowButtom.piechart.setColor(graph.colors);
 		clog.setCheckBoxes(graph.getFullPieData());
 		graph.deDraw();
+		clog.windowButtom.piechart.deDraw();
 	}
 	
 	public void setDetailedGraph(String path, String actor){
@@ -133,6 +134,7 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		clog.windowButtom.piechart.setColor(graph.colors);
 		clog.setCheckBoxes(graph.getFullPieData());
 		graph.deDraw();
+		clog.windowButtom.piechart.deDraw();
 	}
 	
 	protected LineGraph calcGraph(String path){

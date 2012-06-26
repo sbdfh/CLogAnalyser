@@ -11,6 +11,7 @@ public class PiechartTemplate {
 	private HashMap<String,Color> color;
 	private String focus = "";
 	private float lastX=0, lastY=0;
+	protected int drawStatus = 0, maxOffset = 0, offsetValue = 1;
 	
 
 	public PiechartTemplate (HashMap<String,Integer> datamap){
@@ -32,11 +33,23 @@ public class PiechartTemplate {
 		}
 	}
 	
+	public void deDraw(){
+		drawStatus = 0;
+	}
+	
 	public void draw_piechart(GL gl, GLUT glut){
-		
+		if (drawStatus == 0){
+			drawStatus = 1;
+			maxOffset = 25;	
+			offsetValue = sum_damage*5;
+		}
+		if (drawStatus == 1 && maxOffset > 0)
+			--maxOffset;	
+		if (drawStatus == 1 && maxOffset == 0)
+			drawStatus = 2;
 		
 		for (Map.Entry<String,Integer> entry : data.entrySet()) {
-			float prozent = (entry.getValue())/(float)sum_damage;
+			float prozent = (entry.getValue())/((float)sum_damage+(float)Math.pow(maxOffset/25.0, 4)*offsetValue);
 			float winkel = prozent*360f;				
 			pie(gl, glut, winkel, prozent, entry.getKey());
 		}		
@@ -92,7 +105,7 @@ public class PiechartTemplate {
 	public void pie (GL gl, GLUT glut, float winkel, float prozent, String name){
 		
 		Color farbe = color.get(name);
-		if ("".equals(focus) || name.equals(focus)){
+		if ("".equals(focus) || name.equals(focus) || drawStatus != 2){
 			gl.glColor3f(farbe.r, farbe.g, farbe.b);
 		} else {
 			gl.glColor3f(0.85f, 0.85f, 0.85f);
