@@ -20,12 +20,12 @@ public class ClassColors {
 	ccolor.put("Recall", 				new Color(1f,0.9f,0.8f));		//31,20,100
 	
 	Color c0 = new Color(0f,0f,0f);
-	Color c1 = new Color(1f,0f,0f);
-	Color c2 = new Color(0f,1f,0f);
-	Color c3 = new Color(0f,0f,1f);
-	Color c4 = new Color(1f,1f,0f);
-	Color c5 = new Color(0f,1f,1f);
-	Color c6 = new Color(1f,0f,1f);
+	Color c1 = new Color(0.75f,0f,0f);
+	Color c2 = new Color(0f,0.75f,0f);
+	Color c3 = new Color(0f,0f,0.75f);
+	Color c4 = new Color(0.75f,0.75f,0f);
+	Color c5 = new Color(0f,0.75f,0.75f);
+	Color c6 = new Color(0.75f,0f,0.75f);
 
 	ccolor.put("Attack", 				c0);
 	ccolor.put("Auto Shot", 			c0);
