@@ -328,11 +328,14 @@ public class LineGraphWindow extends JoglTemplate_fabian{
     			path = "MadnessOfDeathwing.txt";
     		else
     			path = "WarlordZonozz.txt";
+    		clog.detaildGraph = false;
     		setGraph(path);
     		graph.setFocus("");
 			clog.windowButtom.piechart.setFocus("");
     	}
     	if (e.getButton() == MouseEvent.BUTTON3){
+    		if (!clog.detaildGraph)
+    			return;
     		clog.detaildGraph=false;
     		setGraph(path);
     		graph.setFocus("");

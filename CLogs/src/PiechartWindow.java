@@ -206,12 +206,14 @@ public class PiechartWindow extends JoglTemplate_fabian{
 	    			path = "MadnessOfDeathwing.txt";
 	    		else
 	    			path = "WarlordZonozz.txt";
-	    		
+	    		clog.detaildGraph = false;
 	    		clog.windowUp.setGraph(path);
 	    		clog.windowUp.graph.setFocus("");
 				piechart.setFocus("");
 	    	}
 	    	if (e.getButton() == MouseEvent.BUTTON3){
+	    		if (!clog.detaildGraph)
+	    			return;
 	    		clog.detaildGraph=false;
 	    		clog.windowUp.setGraph(path);
 	    		clog.windowUp.graph.setFocus("");
