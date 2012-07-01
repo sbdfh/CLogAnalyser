@@ -86,6 +86,8 @@ public class LineGraph {
 	
 	public void deDraw(){
 		drawStatus = 0;
+		starttimeOffset = start;
+		endtimeOffset = end;
 	}
 	
 	
@@ -93,7 +95,7 @@ public class LineGraph {
 		TooltipInformation ret = new TooltipInformation();	
 		if (Math.ceil(x*steps) > 199)
 			x -= 1;
-		ret.additional = (int)(x*(end-start));
+		ret.additional = (int)(x*(endtimeOffset-starttimeOffset))+(starttimeOffset-start);
 		float[] values = new float[numActors];
 		for (int i = 0; i < numActors; ++i)			
 			values[i] = (float)(x*steps - Math.floor(x*steps))*parsedData[i][(int)Math.floor(x*steps)]+(float)(Math.ceil(x*steps)-x*steps)*parsedData[i][(int)Math.ceil(x*steps)];
@@ -112,26 +114,67 @@ public class LineGraph {
 	}
 	
 	public void increaseStart(){
-		if (endtimeOffset + starttimeOffset >= steps-1)
+		int step = 10000;
+		if (endtimeOffset < starttimeOffset + step)
 			return;
-		++starttimeOffset;
+		starttimeOffset += step;
 		refreshLines();
 	}
 	
 	public void decreaseStart(){
-		if (starttimeOffset == 0)
+		int step = 10000;
+		starttimeOffset -= step;
+		if (starttimeOffset < start)
+			starttimeOffset = start;
+		refreshLines();
+	}
+	
+	public void increaseEnd(){
+		int step = 10000;
+		endtimeOffset += step;
+		if (endtimeOffset > end)
+			endtimeOffset = end;
+		refreshLines();
+	}
+	
+	public void decreaseEnd(){
+		int step = 10000;
+		if (endtimeOffset - step < starttimeOffset)
 			return;
-		--starttimeOffset;
+		endtimeOffset -= step;
 		refreshLines();
 	}
 	
 	protected void refreshLines(){
-		for (int i = 0; i < numActors; ++i){
-			float[] tmp = new float[steps - (starttimeOffset + endtimeOffset)];
-			for (int j = starttimeOffset; j < steps - endtimeOffset; ++j)
-				tmp[j-starttimeOffset] = parsedData[i][j];
-			lines[i] = new LineGraphLine(tmp, yMax);			
+		focus = "";
+		HashMap<String, Integer> assoc = new HashMap<String, Integer>();	
+		int actorsFound = 0, i = 0;	
+		while(actorsFound < numActors){
+			LineGraphData current = data.get(new Integer(i++));	
+			if (!assoc.containsKey(current.name)){
+				assocByInt[actorsFound] = current.name;
+				assoc.put(current.name, actorsFound++);	
+			}
 		}
+		parsedData = new float[numActors][steps];	
+		for (i = 0; i < numActors; ++i){
+			LinkedList<LineGraphData> sortedData = new LinkedList<LineGraphData>();
+			int num = data.keySet().size();
+			for (int j = 0; j < num; ++j){
+				LineGraphData current = data.get(j);
+				if (!assoc.containsKey(current.name)){
+					System.out.println("WARNING: Unknown Actor: "+current.name);
+					continue;
+				}
+				if (assoc.get(current.name) == i)
+					sortedData.add(current);
+			}
+			Collections.sort(sortedData, new LineGraphComp());
+			calcDPS(sortedData, i);
+		}		
+		lines = new LineGraphLine[numActors];
+		for (i = 0; i < numActors; ++i)
+			lines[i] = new LineGraphLine(parsedData[i], yMax);
 	}
 	
 	protected void calcDuration(){
@@ -148,7 +191,9 @@ public class LineGraph {
 				max = current;
 		}		
 		end = max.millis + max.second * 1000 + max.minute*60*1000 + max.hour*60*60*1000;
-		start = min.millis + min.second * 1000 + min.minute*60*1000 + min.hour*60*60*1000;		
+		endtimeOffset = end;
+		start = min.millis + min.second * 1000 + min.minute*60*1000 + min.hour*60*60*1000;
+		starttimeOffset = start;
 	}
 	
 	public void draw(GL gl){
@@ -218,15 +263,22 @@ public class LineGraph {
 		// Vertical Time Lines
 		i = 30*1000;
 		while (i < end-start){
+			if (i < starttimeOffset - start){
+				i+=30*1000;			
+				continue;
+			}
+			if (i > endtimeOffset - start)
+				break;
+			float pos = (float)(i - (starttimeOffset - start)) / (endtimeOffset-starttimeOffset)*WIDTH;
 			gl.glBegin(GL.GL_LINE_STRIP);
-			gl.glVertex2f((float)i/(end-start)*WIDTH, 0);
-			gl.glVertex2f((float)i/(end-start)*WIDTH, 1);
+			gl.glVertex2f(pos, 0);
+			gl.glVertex2f(pos, 1);
 			gl.glEnd();
 			if (end-start >= 600000 && (i/1000)%60 > 10){
 				i+=30*1000;		
 				continue;
 			}
-			gl.glRasterPos2f((float)i/(end-start)*WIDTH-0.075f, -0.1f);			
+			gl.glRasterPos2f(pos-0.075f, -0.1f);			
 			if (i/60000 < 10 && (i/1000)%60 < 10)
 				glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "0"+i/60000+":0"+(i/1000)%60);
 			else if (i/60000 < 10)
@@ -325,13 +377,13 @@ public class LineGraph {
 	protected void calcDPS(LinkedList<LineGraphData> sortedData, int actor){
 		int j = 0;
 		TimeBuffer buf = new TimeBuffer();
-		float stepSize = (end-start)/(float)steps;
+		float stepSize = (endtimeOffset-starttimeOffset)/(float)steps;
 		for (int i = 0; i < steps; ++i){
 			while (sortedData.size() > j){
 				LineGraphData now = sortedData.get(j);
 				int timestamp = now.millis + now.second*1000 + now.minute*60*1000 + now.hour*60*60*1000;
-				if (timestamp - start <= i*stepSize){
-					buf.put(timestamp-start, now.amount);
+				if (timestamp - starttimeOffset <= i*stepSize){
+					buf.put(timestamp-starttimeOffset, now.amount);
 					++j;
 				} else
 					break;

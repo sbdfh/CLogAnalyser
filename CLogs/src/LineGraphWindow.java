@@ -67,6 +67,14 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 //	}	
 
 	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+			graph.increaseStart();
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+			graph.decreaseStart();
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+			graph.increaseEnd();
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+			graph.decreaseEnd();
 		/*if (e.getKeyCode() == KeyEvent.VK_C){
 			g1.setFocus("Cursia");
 			g2.setFocus("Cursia");
