@@ -156,7 +156,9 @@ public class LineGraphWindow extends JoglTemplate_fabian{
 		int i = 0;
 		while (it.hasNext()){
 			CLogEntry current = it.next();
-			if (current.suf != CLogEntry.Suffix.DAMAGE || !actors.containsKey(current.sourceName))
+			if ((current.pre == CLogEntry.Prefix.SWING || current.pre == CLogEntry.Prefix.RANGE)&& current.suf == CLogEntry.Suffix.DAMAGE)
+				current.spellName = "Attack";	
+			if (current.suf != CLogEntry.Suffix.DAMAGE || !actors.containsKey(current.sourceName) || !actors.containsKey(current.spellName))
 				continue;
 			if (!found.containsKey(current.sourceName))
 				found.put(current.sourceName, 0);
