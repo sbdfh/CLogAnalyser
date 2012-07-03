@@ -88,6 +88,7 @@ public class LineGraph {
 		drawStatus = 0;
 		starttimeOffset = start;
 		endtimeOffset = end;
+		refreshLines();
 	}
 	
 	

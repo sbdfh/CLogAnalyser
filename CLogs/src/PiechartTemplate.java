@@ -7,7 +7,7 @@ public class PiechartTemplate {
 
 	private HashMap<String,Integer> data = new HashMap<String,Integer> ();
 	private Integer sum_damage = 0;
-	public static float TESSELATION = 50;
+	public static float TESSELATION = 1000;
 	private HashMap<String,Color> color;
 	private String focus = "";
 	private float lastX=0, lastY=0;

@@ -1,0 +1,119 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  %\usetheme{AnnArbor}
+  %\usetheme{Montpellier}
+  %\usetheme{Hannover}
+  %\usetheme{Singapore}
+  \usetheme{Madrid}
+}
+
+\newcommand*\oldmacro{}
+\let\oldmacro\insertshorttitle% ursprüngliche Definition sichern
+\renewcommand*\insertshorttitle{%
+  \oldmacro
+  \hfill\insertframenumber\,/\,\inserttotalframenumber}
+
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage[english]{babel}
+
+%\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
+
+%\usepackage{hyperref}
+
+% WTF? times? serious?
+%\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\usepackage{listings}
+
+%\usepackage{tabularx}
+
+\title[Project Presentation]{Data and Information Visualization \\ MMO CombatLog Visualization}
+
+%\subtitle {Untertitel} (optional)
+
+\author[Brauer, Fortmann, Schmauder]
+{S. Brauer \and M. Fortmann \and F. Schmauder}
+
+\institute[UPB]{Institute for Computer Science}
+
+\date{July 5, 2012}
+
+
+\subject{Computer Science}
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{upb_logo.png}
+\logo{\pgfuseimage{university-logo}}
+
+
+
+% Folgendes sollte gelöscht werden, wenn man nicht am Anfang jedes
+% Unterabschnitts die Gliederung nochmal sehen möchte.
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>{Gliederung}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
+
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Overview}
+\begin{itemize}
+	\item Reliable Time-Series Data from a computer game
+	\item Analysis required to improve performance
+	\item Interfight and Interplayer comparison
+	\item Useful mainly for gamers
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Visualization Techniques}
+\begin{itemize}
+	\item Line Graph, Pie Chart, Tooltips
+	\item Line Graph allows comparison at specific points in time
+	\item Pie Chart allows quick comparison of ratios
+	\item Tooltips provide detailed Information
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Interactive Techniques}
+\begin{itemize}
+	\item Tooltips realised via mouseover
+	\item Allowing intuitive information access
+	\item Highlighting and Selective Filtering
+	\item Increasing overview in huge chunks of data
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Interactive Techniques cont.}
+\begin{itemize}
+	\item Select and Zoom (Click)
+	\item Breaks Data points down into their components
+	\item Allowing even more detailed analysis
+	\item Select and Zoom (Time Shift)
+	\item Detailed view on specific time windows
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implementation Details}
+\begin{itemize}
+	\item OpenGL as Programming Language of choice
+	\item Sophisticated resuable parser
+	\item Interconnected Visualizations
+	\item \alert{Fancy} animations
+\end{itemize}
+\end{frame}
+
+
+\end{document}
+

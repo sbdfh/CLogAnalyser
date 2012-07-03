@@ -186,7 +186,7 @@ public class PiechartWindow extends JoglTemplate_fabian{
 		
 		return position;
 	}
-	String path = "WarlordZonozz.txt";
+
 	 public void mouseClicked(MouseEvent e)
 		{
 	    	if (e.getButton() == MouseEvent.BUTTON1){
@@ -196,18 +196,18 @@ public class PiechartWindow extends JoglTemplate_fabian{
 	    		TooltipInformation tooltip=piechart.getInfo(mousePosition[0], mousePosition[1]);
 	    		if (tooltip != null&&!clog.detaildGraph){
 	    			clog.detaildGraph=true;
-	    			clog.windowUp.setDetailedGraph(path, tooltip.name);
+	    			clog.windowUp.setDetailedGraph(clog.windowUp.path, tooltip.name);
 	    			clog.windowUp.graph.setFocus("");
 	    			piechart.setFocus("");
 	    		}
 	    	}
 	    	if (e.getButton() == MouseEvent.BUTTON2){
-	    		if ("WarlordZonozz.txt".equals(path))
-	    			path = "MadnessOfDeathwing.txt";
+	    		if ("WarlordZonozz.txt".equals(clog.windowUp.path))
+	    			clog.windowUp.path = "MadnessOfDeathwing.txt";
 	    		else
-	    			path = "WarlordZonozz.txt";
+	    			clog.windowUp.path = "WarlordZonozz.txt";
 	    		clog.detaildGraph = false;
-	    		clog.windowUp.setGraph(path);
+	    		clog.windowUp.setGraph(clog.windowUp.path);
 	    		clog.windowUp.graph.setFocus("");
 				piechart.setFocus("");
 	    	}
@@ -215,7 +215,7 @@ public class PiechartWindow extends JoglTemplate_fabian{
 	    		if (!clog.detaildGraph)
 	    			return;
 	    		clog.detaildGraph=false;
-	    		clog.windowUp.setGraph(path);
+	    		clog.windowUp.setGraph(clog.windowUp.path);
 	    		clog.windowUp.graph.setFocus("");
 				piechart.setFocus("");
 	    	}

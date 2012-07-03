@@ -49,6 +49,11 @@ public class ClassColors {
 	ccolor.put("Combustion", 			c4);
 	ccolor.put("Living Bomb", 			c5);
 	ccolor.put("Flame Orb", 			c6);
+	
+	ccolor.put("Arcane Blast", 			c1);
+	ccolor.put("Arcane Explosion", 		c2);
+	ccolor.put("Arcane Missiles", 		c3);
+	ccolor.put("Arcane Barrage", 		c4);
 
 	ccolor.put("Templar's Verdict",		c1);
 	ccolor.put("Hand of Light", 		c2);
@@ -102,8 +107,8 @@ public class ClassColors {
 	ccolor.put("Bloodthirst", 			c2);
 	ccolor.put("Devastate", 			c3);
 	ccolor.put("Whirlwind Maw", 		c4);
-	ccolor.put("Raging Blow", 			c5);
-	ccolor.put("Whirlwind", 			c6);
+	ccolor.put("Raging Blow", 			c6);
+	
 	
 	}
 	
